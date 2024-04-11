@@ -71,7 +71,7 @@ export default function FileSelector ({ setSelectedFile }: FileSelectorProps) {
                         </select>
                     </div>
                     <div>
-                        <button type="submit">Criar dataframe</button>
+                        <button type="submit">Selecionar</button>
                     </div>
                 </form>
             </div>

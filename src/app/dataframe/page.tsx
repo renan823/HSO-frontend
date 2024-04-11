@@ -1,6 +1,7 @@
 "use client";
 
 import { DataframeEditor } from "@/components/DataframeEditor";
+import FileSelector from "@/components/FileSelector";
 import ServerRequest from "@/services/ServerRequest";
 import { DataframeInterface } from "@/services/interfaces";
 import { useEffect, useState } from "react";
@@ -33,7 +34,7 @@ export default function Dataframe () {
         <div>
             <DataframeEditor.Layout.Body>
                 <DataframeEditor.Layout.Header>
-                    <DataframeEditor.FileSelector setSelectedFile={setSelectedfile}/>
+                    <FileSelector setSelectedFile={setSelectedfile}/>
                     <DataframeEditor.Editor filename={selectedFile} dataframe={dataframe} setDataframe={setDataframe}/>
                 </DataframeEditor.Layout.Header>
                 <DataframeEditor.View dataframe={dataframe}/>
