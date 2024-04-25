@@ -2,6 +2,7 @@ import ServerRequest from "@/services/ServerRequest";
 import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { TailSpin } from "react-loader-spinner";
+import Loader from "./Loader";
 
 interface FileSelectorProps {
     setSelectedFile: Dispatch<SetStateAction<string>>
@@ -45,9 +46,7 @@ export default function FileSelector ({ setSelectedFile }: FileSelectorProps) {
 
     if (loading) {
         return (
-            <div>
-                <TailSpin color="blue" strokeWidth={2}/>
-            </div>
+            <Loader/>
         )
     }
 
