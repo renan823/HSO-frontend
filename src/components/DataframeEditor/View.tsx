@@ -8,9 +8,7 @@ export default function View ({ dataframe }: ViewProps) {
 
     if (!dataframe || dataframe.columns.length === 0) {
         return (
-            <div>
-                <h2>Selecione um arquivo</h2>
-            </div>
+            <div></div>
         )
     }
 

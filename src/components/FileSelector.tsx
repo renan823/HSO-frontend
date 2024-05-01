@@ -18,6 +18,8 @@ export default function FileSelector ({ setSelectedFile }: FileSelectorProps) {
 
         if (file) {
             setSelectedFile(file);
+        } else {
+            return toast.error("Nenhum arquivo escolhido");
         }
     }
 
@@ -52,28 +54,28 @@ export default function FileSelector ({ setSelectedFile }: FileSelectorProps) {
 
     return (
         <div>
-            <h2>Selecione o arquivo</h2>
-            <div>
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <select onChange={(event) => setFile(event.target.value)}>
-                            <option value="">Escolher...</option>
-                            {
-                                files.map((file, index) => {
-                                    return (
-                                        <option key={index} value={file}>
-                                            {file}
-                                        </option>
-                                    )
-                                })
-                            }   
-                        </select>
-                    </div>
-                    <div>
-                        <button type="submit">Selecionar</button>
-                    </div>
-                </form>
-            </div>
+            <h2 className="text-2xl text-violet-700 font-bold">Escolha o arquivo de dados</h2>
+            <form onSubmit={handleSubmit} className="flex gap-4 items-center mx-5">
+                <div>
+                    <select onChange={(event) => setFile(event.target.value)} className="bg-white py-2 px-5 w-full rounded-sm shadow-md shadow-slate-600">
+                        <option value="">Escolher...</option>
+                        {
+                            files.map((file, index) => {
+                                return (
+                                    <option key={index} value={file}>
+                                        {file}
+                                    </option>
+                                )
+                            })
+                        }   
+                    </select>
+                </div>
+                <div>
+                    <button type="submit" className="bg-violet-700 px-6 py-2 rounded-md shadow-md shadow-violet-900">
+                        <p className="text-lg text-white font-bold text-center">Selecionar</p>
+                    </button>
+                </div>
+            </form>
         </div>
     )
 }

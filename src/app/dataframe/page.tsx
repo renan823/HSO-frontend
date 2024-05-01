@@ -31,15 +31,15 @@ export default function Dataframe () {
     }, [selectedFile])
 
     return (
-        <div>
-            <DataframeEditor.Layout.Body>
-                <DataframeEditor.Layout.Header>
-                    <FileSelector setSelectedFile={setSelectedfile}/>
-                    <DataframeEditor.Editor filename={selectedFile} dataframe={dataframe} setDataframe={setDataframe}/>
-                </DataframeEditor.Layout.Header>
-                <DataframeEditor.View dataframe={dataframe}/>
-            </DataframeEditor.Layout.Body>
-        </div>
+        <DataframeEditor.Layout.Body>
+            <DataframeEditor.Layout.Header>
+                <FileSelector setSelectedFile={setSelectedfile}/>
+            </DataframeEditor.Layout.Header>
+            <DataframeEditor.Layout.Header>
+                <DataframeEditor.Editor filename={selectedFile} dataframe={dataframe} setDataframe={setDataframe}/>
+            </DataframeEditor.Layout.Header>
+            <DataframeEditor.View dataframe={dataframe}/>
+        </DataframeEditor.Layout.Body>
     )
     
 }

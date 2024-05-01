@@ -12,13 +12,17 @@ interface EditorProps {
 export default function Editor ({ filename, dataframe, setDataframe }: EditorProps) {
     if (!filename || filename.trim().length === 0) {
         return (
-            <div></div>
+            <div className="flex justify-center w-full">
+                <h1 className="text-center text-lg text-white font-bold">Nenhum dataframe foi escolhido</h1>
+            </div>
         )
     }
 
     if (!dataframe || dataframe.columns.length === 0) {
         return (
-            <div></div>
+            <div className="flex justify-center w-full">
+                <h1 className="text-center text-lg text-white font-bold">Oops! Este arquivo parece vazio</h1>
+            </div>
         )
     }
 
@@ -103,7 +107,7 @@ export default function Editor ({ filename, dataframe, setDataframe }: EditorPro
 
     return (
         <div>
-            <h1>Edite o arquivo {filename}</h1>
+            <h1 className="text-2xl text-white font-bold">Edite o arquivo <span className="text-violet-500 underline">{filename}</span></h1>
             <div>
                 <form onSubmit={handleDropColumn}>
                     <div>
