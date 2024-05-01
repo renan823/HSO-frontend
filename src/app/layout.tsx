@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import Navigator from "@/components/Navigator";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: Readonly<{children: React.React
     	<html lang="pt-br">
       		<body className={inter.className}>
 			  	<Toaster position="top-right" toastOptions={{ style: { borderColor: "#4c1d95", borderWidth: 2 } }}/>
+				<Navigator/>
 				{children}
 			</body>
     	</html>

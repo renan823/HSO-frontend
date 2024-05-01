@@ -19,7 +19,7 @@ export default function Editor () {
             if (response.getStatus() === 200) {
                 toast.success(response.getData().message);
             } else {
-                toast.error(response.getData().message)
+                toast.error(response.getData().message);
             }
         }
     }
