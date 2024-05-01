@@ -4,7 +4,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import Navigator from "@/components/Navigator";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], style: "normal" });
 
 export const metadata: Metadata = {
   	title: "HSO - Dashboard"
@@ -13,10 +13,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{children: React.ReactNode}>) {
   	return (
     	<html lang="pt-br">
-      		<body className={inter.className}>
-			  	<Toaster position="top-right" toastOptions={{ style: { borderColor: "#4c1d95", borderWidth: 2 } }}/>
+      		<body className={`${ inter.className } flex flex-col items-center h-screen bg-slate-900`}>
+			  	<Toaster position="bottom-right" toastOptions={{ style: { fontSize: 16, fontWeight: "bold" } }}/>
 				<Navigator/>
-				{children}
+				<div className="flex flex-col w-full items-center justify-center h-5/6 p-6">
+					{children}
+				</div>
 			</body>
     	</html>
   );

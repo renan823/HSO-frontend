@@ -8,13 +8,11 @@ export default function Editor () {
     const [word, setWord] = useState("");
     const [synonym, setSynonym] = useState("");
 
-    async function handleAddWord () {
+    async function handleAddSynonym () {
         if (word.trim().length !== 0 && synonym.trim().length !== 0) {
-            let payload = { word, synonym };
+            const request = new ServerRequest("post", "/thesaurus/synonym/add", { word, synonym });
 
-            let request = new ServerRequest("post", "/thesaurus/synonym/add", payload);
-
-            let response = await request.handle();
+            const response = await request.handle();
 
             if (response.getStatus() === 200) {
                 toast.success(response.getData().message);
@@ -24,13 +22,25 @@ export default function Editor () {
         }
     }
 
-    async function handleRemoveWord () {
+    async function handleRemoveSynonym () {
         if (word.trim().length !== 0 && synonym.trim().length !== 0) {
-            let payload = { word, synonym };
+            const request = new ServerRequest("post", "/thesaurus/synonym/remove", { word, synonym });
 
-            let request = new ServerRequest("post", "/thesaurus/synonym/remove", payload);
+            const response = await request.handle();
 
-            let response = await request.handle();
+            if (response.getStatus() === 200) {
+                toast.success(response.getData().message);
+            } else {
+                toast.error(response.getData().message)
+            }
+        }
+    }
+
+    async function handleRemoveWord () {
+        if (word.trim().length !== 0) {
+            const request = new ServerRequest("post", "/thesaurus/word/remove", { word });
+
+            const response = await request.handle();
 
             if (response.getStatus() === 200) {
                 toast.success(response.getData().message);
@@ -53,13 +63,17 @@ export default function Editor () {
                         <input type="text" onChange={(event) => setSynonym(event.target.value)}/>
                     </div>
                     <div>
-                        <button className="flex gap-4" onClick={handleAddWord}>
+                        <button className="flex gap-4" onClick={handleAddSynonym}>
                             <PlusCircle/>
                             <h2>Adicionar sinônimo</h2>
                         </button>
-                        <button className="flex gap-4" onClick={handleRemoveWord}>
+                        <button className="flex gap-4" onClick={handleRemoveSynonym}>
                             <MinusCircle/>
                             <h2>Remover sinônimo</h2>
+                        </button>
+                        <button className="flex gap-4" onClick={handleRemoveWord}>
+                            <MinusCircle/>
+                            <h2>Remover palavra (e todas as suas conexões)</h2>
                         </button>
                     </div>
                 </form>
