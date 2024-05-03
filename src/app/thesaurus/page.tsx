@@ -64,7 +64,12 @@ export default function Thesaurus () {
     return (
         <ThesaurusEditor.Layout.Body>
             <ThesaurusEditor.Layout.Header>
-                <FileSelector setSelectedFile={setSelectedfile}/>
+                <div>
+                    <FileSelector setSelectedFile={setSelectedfile}/>
+                    <h2>Cuidado ao preencher seu thesaurus!</h2>
+                </div>
+            </ThesaurusEditor.Layout.Header>
+            <ThesaurusEditor.Layout.Header>
                 <ThesaurusEditor.Editor/>
             </ThesaurusEditor.Layout.Header>
             <ThesaurusEditor.View thesaurus={thesaurus}/>

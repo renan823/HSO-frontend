@@ -71,7 +71,7 @@ export default function FileSelector ({ setSelectedFile }: FileSelectorProps) {
                     </select>
                 </div>
                 <div>
-                    <button type="submit" className="bg-violet-700 px-6 py-2 rounded-md shadow-md shadow-violet-900">
+                    <button type="submit" className="bg-violet-700 px-6 py-2 rounded-md shadow-md shadow-violet-900 hover:bg-violet-600 hover:shadow-violet-800">
                         <p className="text-lg text-white font-bold text-center">Selecionar</p>
                     </button>
                 </div>

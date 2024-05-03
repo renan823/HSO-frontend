@@ -2,11 +2,13 @@ import ServerRequest from "@/services/ServerRequest";
 import { MinusCircle, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import Card from "../Card";
 
 export default function Editor () {
 
     const [word, setWord] = useState("");
     const [synonym, setSynonym] = useState("");
+    const [removeWord, setRemoveWord] = useState("");
 
     async function handleAddSynonym () {
         if (word.trim().length !== 0 && synonym.trim().length !== 0) {
@@ -15,10 +17,12 @@ export default function Editor () {
             const response = await request.handle();
 
             if (response.getStatus() === 200) {
-                toast.success(response.getData().message);
+                return toast.success(response.getData().message);
             } else {
-                toast.error(response.getData().message);
+                return toast.error(response.getData().message);
             }
+        } else {
+            return toast.error("Preencha corretamento os campos");
         }
     }
 
@@ -29,54 +33,85 @@ export default function Editor () {
             const response = await request.handle();
 
             if (response.getStatus() === 200) {
-                toast.success(response.getData().message);
+                return toast.success(response.getData().message);
             } else {
-                toast.error(response.getData().message)
+                return toast.error(response.getData().message)
             }
+        } else {
+            return toast.error("Preencha corretamento os campos");
         }
     }
 
     async function handleRemoveWord () {
-        if (word.trim().length !== 0) {
-            const request = new ServerRequest("post", "/thesaurus/word/remove", { word });
+        if (removeWord.trim().length !== 0) {
+            const request = new ServerRequest("post", "/thesaurus/word/remove", { word: removeWord });
 
             const response = await request.handle();
 
             if (response.getStatus() === 200) {
-                toast.success(response.getData().message);
+                return toast.success(response.getData().message);
             } else {
-                toast.error(response.getData().message)
+                return toast.error(response.getData().message)
             }
+        } else {
+            return toast.error("Digite a palavra corretamente");
         }
     }
 
     return (
-        <div>
-            <div>
-                <form className="flex p-2 border-2" onSubmit={(event) => event.preventDefault()}>
+        <div className="w-full">
+            <div className="py-2 px-6 w-fit m-4 rounded-md bg-slate-700">
+                <h1 className="text-2xl text-white font-bold">Edite o Thesaurus</h1>
+            </div>
+            <div className="flex w-full justify-evenly gap-5">
+                <Card>
                     <div>
-                        <label>Palavra</label>
-                        <input type="text" onChange={(event) => setWord(event.target.value)}/>
+                        <h4 className="text-xl font-bold text-violet-500">Adicionar/Remover conexão</h4>
+                        <form className="py-4">
+                            <div className="my-1">
+                                <label className="text-lg font-bold text-violet-500">Palavra</label>
+                                <div>
+                                    <input type="text" name="word" value={word} onChange={(event) => setWord(event.target.value)} autoComplete="off" className="bg-white py-2 px-4 w-full font-bold rounded-sm shadow-md shadow-slate-600"/>
+                                </div>
+                            </div>
+                            <div className="my-1">
+                                <label className="text-lg font-bold text-violet-500">Sinônimo</label>
+                                <div>
+                                    <input type="text" name="word" value={synonym} onChange={(event) => setSynonym(event.target.value)} autoComplete="off" className="bg-white py-2 px-4 w-full font-bold rounded-sm shadow-md shadow-slate-600"/>
+                                </div>
+                            </div>
+                        </form>
+                        <p className="text-white font-bold my-4">*Cuidado! Ao adicionar uma conexão, as palavras já conectadas irão se conectar ao membros inseridos</p>
+                        <p className="text-white font-bold my-4">Exemplo: A-B e B-C -{">"} A-C</p>
                     </div>
-                    <div>
-                        <label>Sinônimo</label>
-                        <input type="text" onChange={(event) => setSynonym(event.target.value)}/>
-                    </div>
-                    <div>
-                        <button className="flex gap-4" onClick={handleAddSynonym}>
-                            <PlusCircle/>
-                            <h2>Adicionar sinônimo</h2>
+                    <div className="flex justify-end mt-4 gap-10">
+                        <button onClick={handleAddSynonym} className="bg-violet-700 px-6 py-2 rounded-md shadow-md shadow-violet-900 hover:bg-violet-600 hover:shadow-violet-800">
+                            <p className="text-lg text-white font-bold text-center">Adicionar</p>
                         </button>
-                        <button className="flex gap-4" onClick={handleRemoveSynonym}>
-                            <MinusCircle/>
-                            <h2>Remover sinônimo</h2>
-                        </button>
-                        <button className="flex gap-4" onClick={handleRemoveWord}>
-                            <MinusCircle/>
-                            <h2>Remover palavra (e todas as suas conexões)</h2>
+                        <button onClick={handleRemoveSynonym} className="bg-violet-700 px-6 py-2 rounded-md shadow-md shadow-violet-900 hover:bg-violet-600 hover:shadow-violet-800">
+                            <p className="text-lg text-white font-bold text-center">Remover</p>
                         </button>
                     </div>
-                </form>
+                </Card>
+                <Card>
+                   <div>
+                        <h4 className="text-xl font-bold text-violet-500">Remover palavra:</h4>
+                        <form className="py-4">
+                            <div className="my-1">
+                                <label className="text-lg font-bold text-violet-500">Palavra</label>
+                                <div>
+                                    <input type="text" name="word" value={removeWord} onChange={(event) => setRemoveWord(event.target.value)} autoComplete="off" className="bg-white py-2 px-4 w-full font-bold rounded-sm shadow-md shadow-slate-600"/>
+                                </div>
+                            </div>
+                        </form>
+                        <p className="text-white font-bold my-4">*Cuidado! Ao remover uma palavra, todas as suas conexões serão perdidas</p>
+                    </div>
+                    <div className="flex justify-end mt-4">
+                        <button onClick={handleRemoveWord} className="bg-violet-700 px-6 py-2 rounded-md shadow-md shadow-violet-900 hover:bg-violet-600 hover:shadow-violet-800">
+                            <p className="text-lg text-white font-bold text-center">Remover</p>
+                        </button>
+                    </div>
+                </Card>
             </div>
         </div>
     )

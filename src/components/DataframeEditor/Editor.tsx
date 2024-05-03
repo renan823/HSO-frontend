@@ -112,7 +112,7 @@ export default function Editor ({ filename, dataframe, setDataframe }: EditorPro
     }
 
     return (
-        <div className="w-full ">
+        <div className="w-full">
             <div className="py-2 px-6 w-fit m-4 rounded-md bg-slate-700">
                 <h1 className="text-2xl text-white font-bold">Edite o arquivo <span className="text-violet-500 underline">{filename}</span></h1>
             </div>
@@ -121,7 +121,7 @@ export default function Editor ({ filename, dataframe, setDataframe }: EditorPro
                    <div>
                         <h4 className="text-xl font-bold text-violet-500">Remover coluna:</h4>
                         <form className="py-4">
-                            <div className="bg-red-200">
+                            <div>
                                 <select value={columnToDrop} onChange={(event) => setColumnToDrop(event.target.value)} className="bg-white py-2 px-5 w-full font-bold rounded-sm shadow-md shadow-slate-600">
                                     <option value="">Escolher...</option>
                                     {
@@ -137,7 +137,7 @@ export default function Editor ({ filename, dataframe, setDataframe }: EditorPro
                         <p className="text-white font-bold my-4">*Cuidado! Uma vez removida, não é possível restaurar a coluna</p>
                     </div>
                     <div className="flex justify-end mt-4 items-end">
-                        <button onClick={handleDropColumn} className="bg-violet-700 px-6 py-2 h-fit rounded-md shadow-md shadow-violet-900">
+                        <button onClick={handleDropColumn} className="bg-violet-700 px-6 py-2 h-fit rounded-md shadow-md shadow-violet-900 hover:bg-violet-600 hover:shadow-violet-800">
                             <p className="text-lg text-white font-bold text-center">Remover</p>
                         </button>
                     </div>
@@ -170,7 +170,7 @@ export default function Editor ({ filename, dataframe, setDataframe }: EditorPro
                         </form>
                     </div>
                     <div className="flex justify-end mt-4">
-                        <button onClick={handleApplyFilters} className="bg-violet-700 px-6 py-2 rounded-md shadow-md shadow-violet-900">
+                        <button onClick={handleApplyFilters} className="bg-violet-700 px-6 py-2 rounded-md shadow-md shadow-violet-900 hover:bg-violet-600 hover:shadow-violet-800">
                             <p className="text-lg text-white font-bold text-center">Aplicar</p>
                         </button>
                     </div>
@@ -182,20 +182,20 @@ export default function Editor ({ filename, dataframe, setDataframe }: EditorPro
                             <div className="my-1">
                                 <label className="text-lg font-bold text-violet-500">Palavra</label>
                                 <div>
-                                    <input type="text" name="word" value={replace.word} onChange={handleReplaceChange} autoComplete="off" className="bg-white py-1 px-4 w-full font-bold rounded-sm shadow-md shadow-slate-600"/>
+                                    <input type="text" name="word" value={replace.word} onChange={handleReplaceChange} autoComplete="off" className="bg-white py-2 px-4 w-full font-bold rounded-sm shadow-md shadow-slate-600"/>
                                 </div>
                             </div>
                             <div className="my-1">
                                 <label className="text-lg font-bold text-violet-500">Substituto</label>
                                 <div>
-                                    <input type="text" name="substitute" value={replace.substitute} onChange={handleReplaceChange} autoComplete="off" className="bg-white py-1 px-4 w-full font-bold rounded-sm shadow-md shadow-slate-600"/>
+                                    <input type="text" name="substitute" value={replace.substitute} onChange={handleReplaceChange} autoComplete="off" className="bg-white py-2 px-4 w-full font-bold rounded-sm shadow-md shadow-slate-600"/>
                                 </div>
                             </div>
                         </form>
                         <p className="text-white font-bold my-4">*É possível substituir espaços brancos por palavras, e vice-versa</p>
                     </div>
                     <div className="flex justify-end mt-4">
-                        <button onClick={handleApplyReplace} className="bg-violet-700 px-6 py-2 rounded-md shadow-md shadow-violet-900">
+                        <button onClick={handleApplyReplace} className="bg-violet-700 px-6 py-2 rounded-md shadow-md shadow-violet-900 hover:bg-violet-600 hover:shadow-violet-800">
                             <p className="text-lg text-white font-bold text-center">Substituir</p>
                         </button>
                     </div>

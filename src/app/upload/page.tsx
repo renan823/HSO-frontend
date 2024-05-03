@@ -86,7 +86,7 @@ export default function Upload () {
                 <input {...dropzone.getInputProps()} type="file" name="dropzone" className="hidden" ref={fileRef}/>
             </div>
             <div className="flex justify-end px-5">
-                <button onClick={handleSubmit} className="bg-violet-700 px-10 py-2 rounded-md shadow-md shadow-violet-900">
+                <button onClick={handleSubmit} className="bg-violet-700 px-10 py-2 rounded-md shadow-md shadow-violet-900 hover:bg-violet-600 hover:shadow-violet-800">
                     <p className="text-lg text-white font-bold text-center">Enviar</p>
                 </button>
             </div>

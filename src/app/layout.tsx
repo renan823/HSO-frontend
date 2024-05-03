@@ -16,7 +16,7 @@ export default function RootLayout({ children }: Readonly<{children: React.React
       		<body className={`${ inter.className } flex flex-col items-center h-screen bg-slate-900`}>
 			  	<Toaster position="bottom-right" toastOptions={{ style: { fontSize: 16, fontWeight: "bold" } }}/>
 				<Navigator/>
-				<div className="flex flex-col w-full items-center justify-center h-5/6 p-6">
+				<div className="flex flex-col w-full h-full items-center justify-center overflow-y-auto p-6">
 					{children}
 				</div>
 			</body>
