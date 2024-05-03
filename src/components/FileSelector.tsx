@@ -54,15 +54,15 @@ export default function FileSelector ({ setSelectedFile }: FileSelectorProps) {
 
     return (
         <div>
-            <h2 className="text-2xl text-violet-700 font-bold">Escolha o arquivo de dados</h2>
-            <form onSubmit={handleSubmit} className="flex gap-4 items-center mx-5">
+            <h2 className="text-2xl m-4 text-violet-700 font-bold">Escolha o arquivo de dados</h2>
+            <form onSubmit={handleSubmit} className="flex gap-4 items-center m-4">
                 <div>
-                    <select onChange={(event) => setFile(event.target.value)} className="bg-white py-2 px-5 w-full rounded-sm shadow-md shadow-slate-600">
-                        <option value="">Escolher...</option>
+                    <select onChange={(event) => setFile(event.target.value)} className="bg-white py-2 px-5 w-full font-bold rounded-sm shadow-md shadow-slate-600">
+                        <option value="" className="font-bold">Escolher...</option>
                         {
                             files.map((file, index) => {
                                 return (
-                                    <option key={index} value={file}>
+                                    <option className="font-bold" key={index} value={file}>
                                         {file}
                                     </option>
                                 )

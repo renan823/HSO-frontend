@@ -20,8 +20,9 @@ export default function Dataframe () {
                 let response = await request.handle();
 
                 setDataframe(response.getData().dataframe);
+                return;
             } catch (error: any) {
-                toast.error("Algo deu errado");
+                return toast.error("Algo deu errado");
             } 
         }
 
