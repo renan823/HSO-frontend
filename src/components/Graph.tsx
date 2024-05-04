@@ -1,78 +1,36 @@
-import ServerRequest from "@/services/ServerRequest";
-import { useEffect, useState } from "react";
-import CytoscapeElement from "react-cytoscapejs";
-import toast from "react-hot-toast";
-import cytoscape from "cytoscape";
+import { SigmaContainer, useLoadGraph } from "@react-sigma/core";
+import Graph from "graphology";
+import { SerializedGraph } from "graphology-types";
+import { useEffect } from "react";
+import "@react-sigma/core/lib/react-sigma.min.css";
 
-//layouts
-import fcose from "cytoscape-fcose";
-import cola from "cytoscape-cola";
+const sigmaStyle = { height: "90vh", width: "90vw" };
 
 interface GraphProps {
-    data: {
-        [Key: string]: string[]
-    }
+    data: SerializedGraph | undefined
 }
 
-//layout não tá funcionando!!!!!!!!
-
-export default function Graph ({ data }: GraphProps) {
-    const [elements, setElements] = useState([]);
-
-    cytoscape.use(fcose);
-    cytoscape.use(cola);
+export function GraphData ({ data }: GraphProps) {
+    const load = useLoadGraph();
 
     useEffect(() => {
-        async function fetch() {
-            try {
-                let request = new ServerRequest("post", "/network/new", { data });
-
-                let response = await request.handle();
-
-                if (response.getStatus() === 201) {
-                    setElements(response.getData().network);
-                }
-            } catch (error: any) {
-                toast.error("Algo deu errado");
-            }
-        }
+        const graph = new Graph();
 
         if (data) {
-            fetch();
+            console.log(data)
+            graph.import(data);
         }
-    }, [data])
 
+        load(graph)
+    }, [load])
+
+    return null;
+}
+
+export default function GraphContainer ({ data }: GraphProps) {
     return (
-        <div className="w-full h-full flex">
-            <CytoscapeElement 
-                elements={elements} 
-                style={{ width: 500, height: 500 }}  
-                className="border-2 border-black" 
-                layout={
-                    { 
-                        name: "cose",
-                        animate: true,
-                        fit: true
-                    }
-                }
-                stylesheet={[
-                    {
-                        selector: "node",
-                        style: {
-                            "background-color": (e: cytoscape.NodeSingular) => e.data("color"),
-                            "width": (e: cytoscape.NodeSingular) => e.data("weight"),
-                            "height": (e: cytoscape.NodeSingular) => e.data("weight"),
-                        }
-                    },
-                    {
-                        selector: "edge",
-                        style: {
-                            "width": (e: cytoscape.EdgeSingular) => e.data("weight"),
-                        }
-                    },
-                ]}
-                cy={() => cytoscape}
-            />
-        </div>
+        <SigmaContainer style={sigmaStyle}>
+            <GraphData data={data}/>
+        </SigmaContainer>
     )
 }

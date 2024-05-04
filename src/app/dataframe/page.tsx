@@ -9,18 +9,17 @@ import toast from "react-hot-toast";
 
 export default function Dataframe () {
 
-    const [selectedFile, setSelectedfile] = useState("")
+    const [selectedFile, setSelectedfile] = useState("");
     const [dataframe, setDataframe] = useState<DataframeInterface>();
 
     useEffect(() => {
         async function fetch () {
             try {
-                let request = new ServerRequest("get", `/dataframes/${selectedFile}`);
+                const request = new ServerRequest("get", `/dataframes/${selectedFile}`);
 
-                let response = await request.handle();
+                const response = await request.handle();
 
                 setDataframe(response.getData().dataframe);
-                return;
             } catch (error: any) {
                 return toast.error("Algo deu errado");
             } 

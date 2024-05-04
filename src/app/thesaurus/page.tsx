@@ -16,13 +16,13 @@ export default function Thesaurus () {
     useEffect(() => {
         async function fetch () {
             try {
-                let request = new ServerRequest("get", "/thesaurus");
+                const request = new ServerRequest("get", "/thesaurus");
 
-                let response = await request.handle();
+                const response = await request.handle();
 
                 setThesaurus(response.getData().thesaurus);
             } catch (error: any) {
-                toast.error("Algo deu errado");
+                return toast.error("Algo deu errado");
             } 
         }
 
@@ -34,13 +34,13 @@ export default function Thesaurus () {
             try {
                 setLoading(true);
 
-                let request = new ServerRequest("post", "/thesaurus/fill", { filename: selectedFile });
+                const request = new ServerRequest("post", "/thesaurus/fill", { filename: selectedFile });
                
-                let response = await request.handle();
+                const response = await request.handle();
 
                 setThesaurus(response.getData().thesaurus);
             } catch (error: any) {
-                toast.error("Algo deu errado");
+                return toast.error("Algo deu errado");
             } finally {
                 setLoading(false)
             }
@@ -54,7 +54,7 @@ export default function Thesaurus () {
     if (loading) {
         return (
             <div>
-                <h2>O thesaurus está sendo carregado com dados!</h2>
+                <h2>O thesaurus está sendo carregado com dados</h2>
                 <h2>Isso pode demorar um pouquinho...</h2>
                 <Loader/>
             </div>
@@ -64,7 +64,7 @@ export default function Thesaurus () {
     return (
         <ThesaurusEditor.Layout.Body>
             <ThesaurusEditor.Layout.Header>
-                <div>
+                <div className="w-full">
                     <FileSelector setSelectedFile={setSelectedfile}/>
                     <h2>Cuidado ao preencher seu thesaurus!</h2>
                 </div>
