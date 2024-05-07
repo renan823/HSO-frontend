@@ -17,11 +17,10 @@ export function GraphData ({ data }: GraphProps) {
         const graph = new Graph();
 
         if (data) {
-            console.log(data)
             graph.import(data);
         }
 
-        load(graph)
+        load(graph);
     }, [load])
 
     return null;

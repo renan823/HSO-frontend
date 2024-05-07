@@ -20,7 +20,7 @@ export default function Network () {
             try {
                 setLoading(true);
 
-                const request = new ServerRequest("post", "/network/new");
+                const request = new ServerRequest("post", "/network/new", { filename: selectedFile });
                
                 const response = await request.handle();
 
@@ -32,8 +32,10 @@ export default function Network () {
             }
         }
 
-        fetch();
-    }, [])
+        if (selectedFile) {
+            fetch();
+        }
+    }, [selectedFile])
 
     if (loading) {
         return (
