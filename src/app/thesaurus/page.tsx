@@ -46,8 +46,9 @@ export default function Thesaurus () {
             }
         }
 
-        if (selectedFile) {
+        if (selectedFile && selectedFile.trim().length !== 0) {
             fetch();
+            setSelectedfile("");
         }
     }, [selectedFile])
 

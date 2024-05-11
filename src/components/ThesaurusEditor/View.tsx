@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react";
+import { Modal } from "../Modal";
 
 interface ViewProps {
     thesaurus: {
@@ -20,6 +21,7 @@ export default function View ({ thesaurus }: ViewProps) {
     }
 
     const [search, setSearch] = useState("");
+    const [isOpen, setOpen] = useState<boolean>(false);
 
     return (
         <div className="mt-10 h-fit w-full bg-slate-800 rounded-lg p-8 items-center">
@@ -32,7 +34,7 @@ export default function View ({ thesaurus }: ViewProps) {
                     <input type="search" onChange={(event) => setSearch(event.target.value)} autoComplete="off" className="bg-white py-2 px-4 w-full font-bold rounded-sm shadow-md shadow-slate-600"/>
                 </div>
                 <div className="py-2 px-6 mb-8">
-                    <button onClick={() => alert("Ainda não tá pronto")} className="bg-violet-700 px-6 py-2 rounded-md shadow-md shadow-violet-900 hover:bg-violet-600 hover:shadow-violet-800">
+                    <button onClick={() => setOpen(true)} className="bg-violet-700 px-6 py-2 rounded-md shadow-md shadow-violet-900 hover:bg-violet-600 hover:shadow-violet-800">
                         <p className="text-lg text-white font-bold text-center">Ver conexões</p>
                     </button>
                 </div>
@@ -61,6 +63,12 @@ export default function View ({ thesaurus }: ViewProps) {
                         </tbody>
                 </table>
             </div>
+            <Modal.Root isOpen={isOpen}>
+                <Modal.Header title="Explorar rede" handleClose={() => setOpen(false)}/>
+                <Modal.Content>
+                    <h1>Network!</h1>                                                                               
+                </Modal.Content>
+            </Modal.Root>
         </div>
     )
 }

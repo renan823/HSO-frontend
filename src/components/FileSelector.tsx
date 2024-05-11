@@ -44,7 +44,7 @@ export default function FileSelector ({ setSelectedFile }: FileSelectorProps) {
         }
 
         fetch();
-    })
+    }, [])
 
     if (loading) {
         return (
