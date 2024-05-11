@@ -1,4 +1,4 @@
-import { SigmaContainer, useLoadGraph } from "@react-sigma/core";
+import { ControlsContainer, FullScreenControl, SigmaContainer, ZoomControl, useLoadGraph } from "@react-sigma/core";
 import Graph from "graphology";
 import { SerializedGraph } from "graphology-types";
 import { useEffect } from "react";
@@ -30,6 +30,10 @@ export default function GraphContainer ({ data }: GraphProps) {
     return (
         <SigmaContainer style={sigmaStyle}>
             <GraphData data={data}/>
+            <ControlsContainer position={"bottom-right"}>
+                <ZoomControl/>
+                <FullScreenControl/>
+            </ControlsContainer>
         </SigmaContainer>
     )
 }

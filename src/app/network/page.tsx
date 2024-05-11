@@ -40,8 +40,8 @@ export default function Network () {
     if (loading) {
         return (
             <div>
-                <h2>A rede está sendo gerada</h2>
-                <h2>Isso pode demorar um pouquinho...</h2>
+                <h2 className="text-center text-white text-2xl font-bold">A rede está sendo gerada</h2>
+                <h2 className="text-center text-white text-2xl font-bold">Isso pode demorar um pouquinho...</h2>
                 <Loader/>
             </div>
         )
@@ -52,10 +52,12 @@ export default function Network () {
             <NetworkEditor.Layout.Header>
                 <div className="w-full">
                     <FileSelector setSelectedFile={setSelectedfile}/>
-                    <h2>Escolha um arquivo para gerar a rede</h2>
+                    <h2 className="text-white text-lg font-bold px-4">Ao selecionar um arquivo, a rede será gerada juntamente com as métricas</h2>
                 </div>
             </NetworkEditor.Layout.Header>
-            <GraphContainer data={network}/>
+            <NetworkEditor.Layout.Header>
+                <GraphContainer data={network}/>
+            </NetworkEditor.Layout.Header>
         </NetworkEditor.Layout.Body>
     )
 }

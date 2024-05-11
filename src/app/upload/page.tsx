@@ -2,7 +2,7 @@
 
 import ServerRequest from "@/services/ServerRequest";
 import { UploadIcon } from "lucide-react";
-import { FormEvent, createRef, useCallback, useState } from "react";
+import { FormEvent, createRef, useCallback, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import toast from "react-hot-toast";
 
@@ -20,13 +20,12 @@ export default function Upload () {
             return toast.error("Extensão incorreta");
         }
 
-        console.log("oi");
-
         setFile(files[0]);
     }, [])
 
-    const dropzone = useDropzone({
-        onDrop
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
     })
 
     async function handleSubmit (event: FormEvent) {
@@ -65,7 +64,7 @@ export default function Upload () {
                 <h1 className="text-3xl text-violet-700 font-bold">Faça upload do arquivo</h1>
                     <h3 className="text-xl text-white font-bold">Use apenas arquivos .xlsx (Excel/Planilha)</h3>
             </div>
-            <div {...dropzone.getRootProps()} className="flex p-10 m-5 cursor-pointer border-slate-500 border-4 border-dashed bg-gray-700 justify-center hover:border-gray-500 rounded-lg">
+            <div {...getRootProps()} className={`flex p-10 m-5 cursor-pointer border-4 border-dashed ${isDragActive ? "border-slate-400 bg-gray-600" : "border-slate-500 bg-gray-700"} justify-center hover:bg-gray-600 hover:border-gray-400 rounded-lg`}>
                 <label htmlFor="dropzone">
                     {
                         file ? 
@@ -83,7 +82,7 @@ export default function Upload () {
                             </div>
                     }
                 </label>
-                <input {...dropzone.getInputProps()} type="file" name="dropzone" className="hidden" ref={fileRef}/>
+                <input {...getInputProps()} type="file" name="dropzone" className="hidden" ref={fileRef}/>
             </div>
             <div className="flex justify-end px-5">
                 <button onClick={handleSubmit} className="bg-violet-700 px-10 py-2 rounded-md shadow-md shadow-violet-900 hover:bg-violet-600 hover:shadow-violet-800">

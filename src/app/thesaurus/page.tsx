@@ -66,7 +66,7 @@ export default function Thesaurus () {
             <ThesaurusEditor.Layout.Header>
                 <div className="w-full">
                     <FileSelector setSelectedFile={setSelectedfile}/>
-                    <h2>Cuidado ao preencher seu thesaurus!</h2>
+                    <h2 className="text-white text-lg font-bold px-4">Cuidado ao preencher seu thesaurus! Todas as palavras novas serão adicionadas!</h2>
                 </div>
             </ThesaurusEditor.Layout.Header>
             <ThesaurusEditor.Layout.Header>
