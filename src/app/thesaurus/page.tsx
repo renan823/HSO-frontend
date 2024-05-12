@@ -11,7 +11,7 @@ export default function Thesaurus () {
 
     const [selectedFile, setSelectedfile] = useState("");
     const [thesaurus, setThesaurus] = useState<any>();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         async function fetch () {

@@ -1,3 +1,73 @@
+import { useEffect, useState } from "react";
+import { WorkerLayoutControl } from "@react-sigma/layout-core";
+import { useSigma } from "@react-sigma/core";
+import { useLayoutCircular } from "@react-sigma/layout-circular";
+import { useLayoutCirclepack } from "@react-sigma/layout-circlepack";
+import { useLayoutRandom } from "@react-sigma/layout-random";
+import { useLayoutNoverlap, useWorkerLayoutNoverlap } from "@react-sigma/layout-noverlap";
+import { useLayoutForce, useWorkerLayoutForce } from "@react-sigma/layout-force";
+import { useLayoutForceAtlas2, useWorkerLayoutForceAtlas2 } from "@react-sigma/layout-forceatlas2";
+import { animateNodes } from "sigma/utils";
+
+interface LayoutSelector {
+    [key: string]: {
+        layout: any,
+        worker?: any
+    }
+}
+
+export default function LayoutControl () {
+    const sigma = useSigma();
+
+    const circularLayout = useLayoutCircular();
+    const circlepackLayout = useLayoutCirclepack();
+    const randomLayout = useLayoutRandom();
+    const noverlapLayout = useLayoutNoverlap();
+    const forceLayout = useLayoutForce({ maxIterations: 100 });
+    const forceAtlas2Layout = useLayoutForceAtlas2({ iterations: 100 });
+
+    const [layout, setLayout] = useState<string>("random");
+
+    const layouts: LayoutSelector = {
+        "circular": { layout: circularLayout.positions },
+        "circlepack": { layout: circlepackLayout.positions },
+        "random": { layout: randomLayout.positions },
+        "noverlap": { layout: noverlapLayout.positions, worker: useWorkerLayoutNoverlap },
+        "force": { layout: forceLayout.positions, worker: useWorkerLayoutForce },
+        "forceatlas2": { layout: forceAtlas2Layout.positions, worker: useWorkerLayoutForceAtlas2 }
+    }
+
+    useEffect(() => {
+        if (layout) {
+            sigma.getGraph().forEachNode(node => sigma.getGraph().updateNode(node, (attr) => { return { ...attr, x: attr.x || 0, y: attr.y || 0 } }));
+            console.log(Object.values(layouts[layout].layout()).filter((node: any) => {
+                if (!node.x || !node.y) {
+                    return node;
+                }
+            }))
+            animateNodes(sigma.getGraph(), layouts[layout].layout(), { duration: 1000 });
+        }
+    }, [layout, layouts, sigma])
+
+    return (
+        <div>
+            <div>
+                {
+                    layouts[layout] && layouts[layout].worker && (
+                        <WorkerLayoutControl layout={layouts[layout].worker} settings={{}}/>
+                    )
+                }
+            </div>
+            <button onClick={() => setLayout("random")}>random</button>
+            <button onClick={() => setLayout("circular")}>circular</button>
+            <button onClick={() => setLayout("circlepack")}>circlepack</button>
+            <button onClick={() => setLayout("noverlap")}>noverlap</button>
+            <button onClick={() => setLayout("force")}>force</button>
+            <button onClick={() => setLayout("forceatlas2")}>forceatlas2</button>
+        </div>
+    )
+}
+
 /*
 import React, { useEffect, useMemo, useState } from "react";
 

@@ -1,8 +1,9 @@
 import { useLoadGraph, useRegisterEvents, useSetSettings, useSigma } from "@react-sigma/core";
-import { useLayoutRandom } from "@react-sigma/layout-random";
 import Graph from "graphology";
 import { SerializedGraph } from "graphology-types";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import Layout from "./layouts/Layout";
+import { animateNodes } from "sigma/utils";
 
 interface GraphDataProps {
     data: SerializedGraph | undefined,
@@ -15,18 +16,15 @@ export default function GraphData ({ data, disableHover, setNode }: GraphDataPro
     const registerEvents = useRegisterEvents();
     const setSettings = useSetSettings();
     const sigma = useSigma();
-    const { assign: assignRandom } = useLayoutRandom();
 
     const [hovered, setHovered] = useState<string | null>(null);
 
     useEffect(() => {
         if (data) {
-            const graph = new Graph();
+            const graph = new Graph({ allowSelfLoops: false });
             graph.import(data);
 
             //apply layout here
-            assignRandom();
-
             loadGraph(graph);
 
             registerEvents({

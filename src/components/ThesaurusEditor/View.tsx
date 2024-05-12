@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 import { Modal } from "../Modal";
+import { SerializedGraph } from "graphology-types";
+import GraphContainer from "../Graph/GraphContainer";
+import ServerRequest from "@/services/ServerRequest";
+import toast from "react-hot-toast";
 
 interface ViewProps {
     thesaurus: {
@@ -22,6 +26,24 @@ export default function View ({ thesaurus }: ViewProps) {
 
     const [search, setSearch] = useState("");
     const [isOpen, setOpen] = useState<boolean>(false);
+    const [network, setNetwork] = useState<SerializedGraph | undefined>(undefined);
+
+    async function toggleNetworkModal () {
+        try {
+            const request = new ServerRequest("get", "/network/thesaurus");
+
+            const response = await request.handle();
+
+            if (response.getStatus() === 201) {
+                setNetwork(response.getData().network);
+                setOpen(true);
+            } else {
+                toast.error(response.getData().message || "Algo deu errado");
+            }
+        } catch {
+            toast.error("Algo deu errado");
+        }
+    }
 
     return (
         <div className="mt-10 h-fit w-full bg-slate-800 rounded-lg p-8 items-center">
@@ -34,7 +56,7 @@ export default function View ({ thesaurus }: ViewProps) {
                     <input type="search" onChange={(event) => setSearch(event.target.value)} autoComplete="off" className="bg-white py-2 px-4 w-full font-bold rounded-sm shadow-md shadow-slate-600"/>
                 </div>
                 <div className="py-2 px-6 mb-8">
-                    <button onClick={() => setOpen(true)} className="bg-violet-700 px-6 py-2 rounded-md shadow-md shadow-violet-900 hover:bg-violet-600 hover:shadow-violet-800">
+                    <button onClick={toggleNetworkModal} className="bg-violet-700 px-6 py-2 rounded-md shadow-md shadow-violet-900 hover:bg-violet-600 hover:shadow-violet-800">
                         <p className="text-lg text-white font-bold text-center">Ver conexões</p>
                     </button>
                 </div>
@@ -66,7 +88,12 @@ export default function View ({ thesaurus }: ViewProps) {
             <Modal.Root isOpen={isOpen}>
                 <Modal.Header title="Explorar rede" handleClose={() => setOpen(false)}/>
                 <Modal.Content>
-                    <h1>Network!</h1>                                                                               
+                    {
+                        network ? 
+                            <GraphContainer data={network}/>
+                        :
+                            <h1 className="text-xl text-violet-500 font-bold">Parece que algo deu errado...</h1>
+                    }                                                                              
                 </Modal.Content>
             </Modal.Root>
         </div>

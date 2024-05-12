@@ -1,7 +1,7 @@
 "use client"
 
 import FileSelector from "@/components/FileSelector";
-import GraphContainer from "@/components/Graph/Graph";
+import GraphContainer from "@/components/Graph/GraphContainer";
 import Loader from "@/components/Loader";
 import { Modal } from "@/components/Modal";
 import { NetworkEditor } from "@/components/NetworkEditor";
