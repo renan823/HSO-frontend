@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { WorkerLayoutControl } from "@react-sigma/layout-core";
 import { useSigma } from "@react-sigma/core";
 import { useLayoutCircular } from "@react-sigma/layout-circular";
-import { useLayoutCirclepack } from "@react-sigma/layout-circlepack";
 import { useLayoutRandom } from "@react-sigma/layout-random";
 import { useLayoutNoverlap, useWorkerLayoutNoverlap } from "@react-sigma/layout-noverlap";
 import { useLayoutForce, useWorkerLayoutForce } from "@react-sigma/layout-force";
 import { useLayoutForceAtlas2, useWorkerLayoutForceAtlas2 } from "@react-sigma/layout-forceatlas2";
 import { animateNodes } from "sigma/utils";
+import fruchtermanReingold from "@ambalytics/graphology-layout-fruchtermanreingold";
 
 interface LayoutSelector {
     [key: string]: {
@@ -20,7 +20,6 @@ export default function LayoutControl () {
     const sigma = useSigma();
 
     const circularLayout = useLayoutCircular();
-    const circlepackLayout = useLayoutCirclepack();
     const randomLayout = useLayoutRandom();
     const noverlapLayout = useLayoutNoverlap();
     const forceLayout = useLayoutForce({ maxIterations: 100 });
@@ -30,17 +29,20 @@ export default function LayoutControl () {
 
     const layouts: LayoutSelector = {
         "circular": { layout: circularLayout.positions },
-        "circlepack": { layout: circlepackLayout.positions },
         "random": { layout: randomLayout.positions },
         "noverlap": { layout: noverlapLayout.positions, worker: useWorkerLayoutNoverlap },
         "force": { layout: forceLayout.positions, worker: useWorkerLayoutForce },
-        "forceatlas2": { layout: forceAtlas2Layout.positions, worker: useWorkerLayoutForceAtlas2 }
+        "forceatlas2": { layout: forceAtlas2Layout.positions, worker: useWorkerLayoutForceAtlas2 },
     }
 
     useEffect(() => {
         if (layout) {
-            sigma.getGraph().forEachNode(node => sigma.getGraph().updateNode(node, (attr) => { return { ...attr, x: attr.x || 0, y: attr.y || 0 } }));
-            animateNodes(sigma.getGraph(), layouts[layout].layout(), { duration: 1000 });
+            if (layout === "fruchterman") {
+                animateNodes(sigma.getGraph(), fruchtermanReingold(sigma.getGraph(), { iterations: 20000 }), { duration: 1000 });
+            } else {
+                sigma.getGraph().forEachNode(node => sigma.getGraph().updateNode(node, (attr) => { return { ...attr, x: attr.x || 0, y: attr.y || 0 } }));
+                animateNodes(sigma.getGraph(), layouts[layout].layout(), { duration: 1000 });
+            }
         }
     }, [layout, layouts, sigma])
 
@@ -55,10 +57,10 @@ export default function LayoutControl () {
             </div>
             <button onClick={() => setLayout("random")}>random</button>
             <button onClick={() => setLayout("circular")}>circular</button>
-            <button onClick={() => setLayout("circlepack")}>circlepack</button>
             <button onClick={() => setLayout("noverlap")}>noverlap</button>
             <button onClick={() => setLayout("force")}>force</button>
             <button onClick={() => setLayout("forceatlas2")}>forceatlas2</button>
+            <button onClick={() => setLayout("fruchterman")}>furchterman</button>
         </div>
     )
 }

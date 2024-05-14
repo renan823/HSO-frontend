@@ -25,9 +25,11 @@ export default function Login () {
 
 
     return (
-        <div>
-            <h1>futuro formulário de login</h1>
-            <button onClick={handleLogin}>logar</button>
+        <div className="flex flex-col p-4 justify-center">
+            <h1 className="text-2xl text-white font-bold">*futuro formulário de login</h1>
+            <button className="bg-violet-700 px-10 py-2 rounded-md shadow-md shadow-violet-900 hover:bg-violet-600 hover:shadow-violet-800" onClick={handleLogin}>
+                <p className="text-lg text-white font-bold text-center">Fazer login</p>
+            </button>
         </div>
     )
 }
