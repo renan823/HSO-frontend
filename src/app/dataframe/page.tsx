@@ -2,12 +2,14 @@
 
 import { DataframeEditor } from "@/components/DataframeEditor";
 import FileSelector from "@/components/FileSelector";
+import { useAuth } from "@/contexts/AuthContext";
 import ServerRequest from "@/services/ServerRequest";
 import { DataframeInterface } from "@/services/interfaces";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function Dataframe () {
+    const { user } = useAuth();
 
     const [selectedFile, setSelectedfile] = useState("");
     const [dataframe, setDataframe] = useState<DataframeInterface>();

@@ -3,8 +3,19 @@ import { MinusCircle, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Card from "../Card";
+import { useAuth } from "@/contexts/AuthContext";
+import PermissionBanner from "../PermissionBanner";
 
 export default function Editor () {
+    const { user } = useAuth();
+
+    if (!user) {
+        return (
+            <div className="w-full flex justify-center">
+                <PermissionBanner/>
+            </div>
+        )
+    }
 
     const [word, setWord] = useState("");
     const [synonym, setSynonym] = useState("");

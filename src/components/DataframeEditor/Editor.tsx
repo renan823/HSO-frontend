@@ -3,6 +3,8 @@ import { DataframeInterface } from "@/services/interfaces";
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import toast from "react-hot-toast";
 import Card from "../Card";
+import { useAuth } from "@/contexts/AuthContext";
+import PermissionBanner from "../PermissionBanner";
 
 interface EditorProps {
     filename: string
@@ -11,6 +13,8 @@ interface EditorProps {
 }
 
 export default function Editor ({ filename, dataframe, setDataframe }: EditorProps) {
+    const { user } = useAuth();
+
     if (!filename || filename.trim().length === 0) {
         return (
             <div className="flex justify-center w-full">
@@ -22,6 +26,14 @@ export default function Editor ({ filename, dataframe, setDataframe }: EditorPro
     if (!dataframe || dataframe.columns.length === 0) {
         return (
             <div></div>
+        )
+    }
+
+    if (dataframe && !user) {
+        return (
+            <div className="w-full flex justify-center">
+                <PermissionBanner/>
+            </div>
         )
     }
 

@@ -40,11 +40,6 @@ export default function LayoutControl () {
     useEffect(() => {
         if (layout) {
             sigma.getGraph().forEachNode(node => sigma.getGraph().updateNode(node, (attr) => { return { ...attr, x: attr.x || 0, y: attr.y || 0 } }));
-            console.log(Object.values(layouts[layout].layout()).filter((node: any) => {
-                if (!node.x || !node.y) {
-                    return node;
-                }
-            }))
             animateNodes(sigma.getGraph(), layouts[layout].layout(), { duration: 1000 });
         }
     }, [layout, layouts, sigma])

@@ -24,7 +24,6 @@ export default function GraphData ({ data, disableHover, setNode }: GraphDataPro
             const graph = new Graph({ allowSelfLoops: false });
             graph.import(data);
 
-            //apply layout here
             loadGraph(graph);
 
             registerEvents({
