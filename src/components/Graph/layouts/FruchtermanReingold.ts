@@ -1,79 +1,114 @@
 import Graph from "graphology";
-import { random } from "graphology-layout";
+import Layout from "./Layout";
+import RandomLayout from "./RandomLayout";
 
 interface Options {
-    width?: number,
-    height?: number
-    iterations?: number,
-    speed?: number,
-    gravity?: number,
-    theta?: number;
+    width: number,
+    height: number,
+    gravity: number,
+    speed: number
 }
 
-class FruchtermanReingold {
-    positions (graph: Graph, options: Options = {}) {
-        const {
-            width = 800,
-            height = 600,
-            iterations = 1000,
-            speed = 1,
-            gravity = 10,
-            theta = 0.8
-        } = options;
-        
-        const k = Math.sqrt((width * height) / graph.order);
-        
-        let positions = random(graph);
-       
-        
-        for (let i = 0; i < iterations; i++) {
-            graph.forEachNode(node => {
-                let displacement = { x: 0, y: 0 };
-        
-                graph.forEachNode(otherNode => {
-                    if (node === otherNode) return;
-        
-                    const delta = {
-                        x: positions[node].x - positions[otherNode].x,
-                        y: positions[node].y - positions[otherNode].y
-                    };
-        
-                    const distance = Math.max(Math.sqrt(delta.x ** 2 + delta.y ** 2), 0.01);
-        
-                    const repulsionForce = k ** 2 / distance;
-                    displacement.x += (delta.x / distance) * repulsionForce;
-                    displacement.y += (delta.y / distance) * repulsionForce;
-                });
-        
-                graph.forEachNeighbor(node, neighbor => {
-                    const delta = {
-                        x: positions[node].x - positions[neighbor].x,
-                        y: positions[node].y - positions[neighbor].y
-                    };
+class FruchtermanReingold implements Layout {
+
+    private readonly defaultOptions: Options = { 
+        width: 10, 
+        height: 10, 
+        gravity: 10,
+        speed: 1
+    };
+
+    constructor () {};
+
+    private repulsion (k: number, distance: number, da: number): number {
+        return da / distance * (k * k / distance);
+    }
+
+    private attraction (k: number, distance: number, da: number): number {
+        return da / distance * (distance * distance / k);
+    }
+
+    execute (graph: Graph, options: Options) {
+        let { width, height, gravity, speed } = options;
+
+        const area = width * height;
+
+        const k = Math.sqrt(area / (graph.nodes.length + 1));
+        const temp = Math.sqrt(area / 10);
+
+        //random layout;
+        const positions = new RandomLayout().positions(graph);
+
+        //initialize forces
+        graph.forEachNode(node => {
+            graph.setNodeAttribute(node, "fx", 0);
+            graph.setNodeAttribute(node, "fy", 0);
+        })
+
+        graph.forEachNode(n1 => {
+            graph.forEachNode(n2 => {
+                if (n1 !== n2) {
+                    const dx = positions[n1].x - positions[n2].x;
+                    const dy = positions[n1].y - positions[n2].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance > 0) {
+                        graph.setNodeAttribute(n1, "fx", graph.getNodeAttribute(n1, "fx") -this.repulsion(k, distance, dx));
+                        graph.setNodeAttribute(n1, "fy", graph.getNodeAttribute(n1, "fy") -this.repulsion(k, distance, dy));
+                    }
+                }
+            })
+        })
+
+        graph.forEachEdge(e => {
+            const source = graph.source(e);
+            const target = graph.target(e);
             
-                    const distance = Math.max(Math.sqrt(delta.x ** 2 + delta.y ** 2), 0.01);
+            const dx = positions[source].x - positions[target].x;
+            const dy = positions[source].y - positions[target].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance > 0) {
+                graph.setNodeAttribute(source, "fx", graph.getNodeAttribute(source, "fx") - this.attraction(k, distance, dx));
+                graph.setNodeAttribute(source, "fy", graph.getNodeAttribute(source, "fy") - this.attraction(k, distance, dy));
             
-                    const attractionForce = distance ** 2 / k;
-                    displacement.x -= (delta.x / distance) * attractionForce;
-                    displacement.y -= (delta.y / distance) * attractionForce;
-                });
-        
-                const distance = Math.sqrt(displacement.x ** 2 + displacement.y ** 2);
-                displacement.x /= distance || 1;
-                displacement.y /= distance || 1;
-            
-                const temperature = (Math.sqrt(width * height) / 10) * (1 - (i + 1) / iterations);
-                positions[node].x += displacement.x * Math.min(distance, temperature * speed);
-                positions[node].y += displacement.y * Math.min(distance, temperature * speed);
-            
-                // Aplicando a força gravitacional
-                positions[node].x += (Math.random() - 0.5) * gravity;
-                positions[node].y += (Math.random() - 0.5) * gravity;
-            });
-        }
-        
+                graph.setNodeAttribute(target, "fx", graph.getNodeAttribute(target, "fx") * this.attraction(k, distance, dx));
+                graph.setNodeAttribute(target, "fy", graph.getNodeAttribute(target, "fy") * this.attraction(k, distance, dy));
+            }
+        })
+
+        graph.forEachNode(node => {
+            const distance = Math.sqrt(positions[node].x * positions[node].x + positions[node].y * positions[node].y);
+
+            const gForce = 0.0001 * k * gravity * distance;
+
+            graph.setNodeAttribute(node, "fx", graph.getNodeAttribute(node, "fx") - gForce * positions[node].x / distance);
+            graph.setNodeAttribute(node, "fy", graph.getNodeAttribute(node, "fy") - gForce * positions[node].y / distance);
+        })
+
+        graph.forEachNode(node => {
+            graph.setNodeAttribute(node, "fx", graph.getNodeAttribute(node, "fx") * speed );
+            graph.setNodeAttribute(node, "fy", graph.getNodeAttribute(node, "fy") * speed );
+        })
+
+        Object.keys(positions).forEach(node => {
+            const { fx, fy } = graph.getNodeAttributes(node) as { fx: number, fy: number };
+
+            const distance = Math.sqrt(fx * fx + fy * fy);
+            if (distance > 0) {
+                positions[node].x += fx / distance * Math.min(temp * speed, distance);
+                positions[node].y += fy / distance * Math.min(temp * speed, distance);
+            }
+        })
+
         return positions;
     }
+
+    positions (graph: Graph, options: any) {
+        return this.execute(graph, { ...options, ...this.defaultOptions });
+    }
+
+    assing (graph: Graph): void {};
 }
 
 export default FruchtermanReingold;

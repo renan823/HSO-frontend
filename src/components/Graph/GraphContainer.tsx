@@ -7,6 +7,7 @@ import "@react-sigma/core/lib/react-sigma.min.css";
 import GraphData from "./GraphData";
 import { Focus, Maximize, Minimize, ZoomIn, ZoomOut } from "lucide-react";
 import LayoutControl from "./LayoutControl";
+import { weightedDegree } from "graphology-metrics/node";
 
 interface GraphProps {
     data: SerializedGraph | undefined
@@ -60,28 +61,51 @@ export default function GraphContainer ({ data }: GraphProps) {
     }, [data])
 
     return (
-        <div className="overflow-y-auto">
+        <div className="overflow-y-auto flex gap-10 p-2">
             <SigmaContainer style={sigmaStyle}>
                 <GraphData data={data} disableHover={false} setNode={setNode}/>
                 <ControlsContainer position={"bottom-right"}>
                     <ZoomControl labels={{ zoomIn: "PLUS", zoomOut: "MINUS", reset: "RESET" }}>
-                        <ZoomIn size={30}/>
-                        <ZoomOut size={30}/>
-                        <Focus size={30}/>
+                        <ZoomIn size={30} color="#6d28d9"/>
+                        <ZoomOut size={30} color="#6d28d9"/>
+                        <Focus size={30} color="#6d28d9"/>
                     </ZoomControl>
                     <FullScreenControl>
-                        <Maximize size={30}/>
-                        <Minimize size={30}/>
+                        <Maximize size={30} color="#6d28d9"/>
+                        <Minimize size={30} color="#6d28d9"/>
                     </FullScreenControl>
                     <LayoutControl/>
                 </ControlsContainer>
             </SigmaContainer>
-            <div>
-                <div>
-                    <h1>Densidade: {networkData?.density} Diametro: {networkData?.diameter}</h1>
-                   <h1>{node}</h1>
-                   <h2>grau: {nodeData?.degree}</h2>
-                   <h2>lista de vizinhos: {nodeData?.neighbors.join("; ")}</h2>
+            <div className="w-2/6">
+                <div className="w-full h-4/5 p-2">
+                    <h2 className="text-violet-700 font-bold">N° de nós: {graph.nodes().length}</h2>
+                    <h2 className="text-violet-700 font-bold">N° de arestas: {graph.edges().length}</h2>
+                    <h2 className="text-slate-800 font-bold">Densidade: {networkData?.density}</h2>
+                    <h2 className="text-slate-800 font-bold">Diametro: {networkData?.diameter}</h2>
+                    <hr className="my-2 border-violet-700"/>
+                    <h2 className="text-slate-800 font-bold">Nó selecionado: {node}</h2>
+                    <h2 className="text-slate-800 font-bold">Grau do nó: {nodeData?.degree}</h2>
+                    <h2 className="text-slate-800 font-bold">Grau ponderado do nó: { node ? weightedDegree(graph, node): "" }</h2>
+                    <h2 className="text-slate-800 font-bold">Lista de vizinhos: </h2>
+                    {
+                        nodeData ?
+                            <div className="h-2/5 flex-col">
+                                <div className="overflow-y-auto p-2 h-full">
+                                    <ul className="list-disc list-inside text-slate-800 font-bold">
+                                        {
+                                            nodeData.neighbors.sort().map(neighbor => {
+                                                return (
+                                                    <li key={neighbor}>{neighbor}</li>
+                                                )
+                                            })
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        :
+                            <div></div>
+                    }
                 </div>
             </div>
         </div>

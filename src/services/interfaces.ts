@@ -10,3 +10,9 @@ export interface UserInterface {
     token: string,
     role: string
 }
+
+export type LayoutMapping = {
+    [node: string]: {
+        [dimension: string]: number;
+    };
+}
