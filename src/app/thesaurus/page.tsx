@@ -2,12 +2,15 @@
 
 import FileSelector from "@/components/FileSelector";
 import Loader from "@/components/Loader";
+import PermissionBanner from "@/components/PermissionBanner";
 import { ThesaurusEditor } from "@/components/ThesaurusEditor";
+import { useAuth } from "@/contexts/AuthContext";
 import ServerRequest from "@/services/ServerRequest";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function Thesaurus () {
+    const { user } = useAuth();
 
     const [selectedFile, setSelectedfile] = useState("");
     const [thesaurus, setThesaurus] = useState<any>();
@@ -54,9 +57,9 @@ export default function Thesaurus () {
 
     if (loading) {
         return (
-            <div>
-                <h2>O thesaurus está sendo carregado com dados</h2>
-                <h2>Isso pode demorar um pouquinho...</h2>
+            <div className="w-full flex-col justify-center">
+                <h2 className="text-white text-2xl font-bold text-center">O thesaurus está sendo carregado com dados</h2>
+                <h2 className="text-white text-xl font-bold my-2 text-center">Isso pode demorar um pouquinho...</h2>
                 <Loader/>
             </div>
         )
@@ -65,10 +68,17 @@ export default function Thesaurus () {
     return (
         <ThesaurusEditor.Layout.Body>
             <ThesaurusEditor.Layout.Header>
-                <div className="w-full">
-                    <FileSelector setSelectedFile={setSelectedfile}/>
-                    <h2 className="text-white text-lg font-bold px-4">Cuidado ao preencher seu thesaurus! Todas as palavras novas serão adicionadas!</h2>
-                </div>
+                {
+                    user?
+                        <div className="w-full">
+                            <FileSelector setSelectedFile={setSelectedfile}/>
+                            <h2 className="text-white text-lg font-bold px-4">Cuidado ao preencher seu thesaurus! Todas as palavras novas serão adicionadas!</h2>
+                        </div>
+                    :
+                        <div className="w-full flex justify-center">
+                            <PermissionBanner/>
+                        </div>
+                }
             </ThesaurusEditor.Layout.Header>
             <ThesaurusEditor.Layout.Header>
                 <ThesaurusEditor.Editor/>

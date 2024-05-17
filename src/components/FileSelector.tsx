@@ -1,7 +1,6 @@
 import ServerRequest from "@/services/ServerRequest";
 import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { TailSpin } from "react-loader-spinner";
 import Loader from "./Loader";
 
 interface FileSelectorProps {
@@ -19,6 +18,7 @@ export default function FileSelector ({ setSelectedFile }: FileSelectorProps) {
         if (file) {
             setSelectedFile(file);
         } else {
+            setSelectedFile("");
             return toast.error("Nenhum arquivo escolhido");
         }
     }

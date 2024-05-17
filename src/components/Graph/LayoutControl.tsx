@@ -8,6 +8,7 @@ import { useLayoutForce, useWorkerLayoutForce } from "@react-sigma/layout-force"
 import { useLayoutForceAtlas2, useWorkerLayoutForceAtlas2 } from "@react-sigma/layout-forceatlas2";
 import { animateNodes } from "sigma/utils";
 import fruchtermanReingold from "@ambalytics/graphology-layout-fruchtermanreingold";
+import FruchtermanReingold from "./layouts/FruchtermanReingold";
 
 interface LayoutSelector {
     [key: string]: {
@@ -38,7 +39,7 @@ export default function LayoutControl () {
     useEffect(() => {
         if (layout) {
             if (layout === "fruchterman") {
-                animateNodes(sigma.getGraph(), fruchtermanReingold(sigma.getGraph(), { iterations: 20000 }), { duration: 1000 });
+                animateNodes(sigma.getGraph(), new FruchtermanReingold().positions(sigma.getGraph()), { duration: 1000 });
             } else {
                 sigma.getGraph().forEachNode(node => sigma.getGraph().updateNode(node, (attr) => { return { ...attr, x: attr.x || 0, y: attr.y || 0 } }));
                 animateNodes(sigma.getGraph(), layouts[layout].layout(), { duration: 1000 });

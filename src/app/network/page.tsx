@@ -35,7 +35,7 @@ export default function Network () {
             }
         }
 
-        if (selectedFile) {
+        if (selectedFile && selectedFile.trim().length !== 0) {
             fetch();
         }
     }, [selectedFile])
