@@ -16,3 +16,8 @@ export type LayoutMapping = {
         [dimension: string]: number;
     };
 }
+
+export type ServerResponse = {
+    status: number,
+    data: any
+}

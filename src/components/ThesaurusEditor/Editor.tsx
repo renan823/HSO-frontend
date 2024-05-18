@@ -1,12 +1,15 @@
 import ServerRequest from "@/services/ServerRequest";
-import { MinusCircle, PlusCircle } from "lucide-react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import toast from "react-hot-toast";
 import Card from "../Card";
 import { useAuth } from "@/contexts/AuthContext";
 import PermissionBanner from "../PermissionBanner";
 
-export default function Editor () {
+interface EditorProps {
+    setThesaurus: Dispatch<SetStateAction<any>>
+}
+
+export default function Editor ({ setThesaurus }: EditorProps) {
     const { user } = useAuth();
 
     if (!user) {
@@ -27,7 +30,11 @@ export default function Editor () {
 
             const response = await request.handle();
 
+            setWord("");
+            setSynonym("");
+
             if (response.getStatus() === 200) {
+                setThesaurus(response.getData().thesaurus);
                 return toast.success(response.getData().message);
             } else {
                 return toast.error(response.getData().message);
@@ -43,7 +50,11 @@ export default function Editor () {
 
             const response = await request.handle();
 
+            setWord("");
+            setSynonym("");
+
             if (response.getStatus() === 200) {
+                setThesaurus(response.getData().thesaurus);
                 return toast.success(response.getData().message);
             } else {
                 return toast.error(response.getData().message)
@@ -59,7 +70,10 @@ export default function Editor () {
 
             const response = await request.handle();
 
+            setRemoveWord("");
+
             if (response.getStatus() === 200) {
+                setThesaurus(response.getData().thesaurus);
                 return toast.success(response.getData().message);
             } else {
                 return toast.error(response.getData().message)

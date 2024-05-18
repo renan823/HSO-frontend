@@ -8,6 +8,7 @@ import GraphData from "./GraphData";
 import { Focus, Maximize, Minimize, ZoomIn, ZoomOut } from "lucide-react";
 import LayoutControl from "./LayoutControl";
 import { weightedDegree } from "graphology-metrics/node";
+import betweennessCentrality from "graphology-metrics/centrality/betweenness";
 
 interface GraphProps {
     data: SerializedGraph | undefined
@@ -34,6 +35,7 @@ export default function GraphContainer ({ data }: GraphProps) {
     useEffect(() => {
         if (data) {
             setGraph(new Graph({ allowSelfLoops: false }).import(data));
+
             setNetworkData({
                 density: GraphMetrics.density(graph.nodes.length, graph.edges.length),
                 diameter: GraphMetrics.diameter(graph)
@@ -87,6 +89,7 @@ export default function GraphContainer ({ data }: GraphProps) {
                     <h2 className="text-slate-800 font-bold">Nó selecionado: {node}</h2>
                     <h2 className="text-slate-800 font-bold">Grau do nó: {nodeData?.degree}</h2>
                     <h2 className="text-slate-800 font-bold">Grau ponderado do nó: { node ? weightedDegree(graph, node): "" }</h2>
+                    
                     <h2 className="text-slate-800 font-bold">Lista de vizinhos: </h2>
                     {
                         nodeData ?

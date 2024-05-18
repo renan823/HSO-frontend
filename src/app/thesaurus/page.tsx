@@ -81,7 +81,7 @@ export default function Thesaurus () {
                 }
             </ThesaurusEditor.Layout.Header>
             <ThesaurusEditor.Layout.Header>
-                <ThesaurusEditor.Editor/>
+                <ThesaurusEditor.Editor setThesaurus={setThesaurus}/>
             </ThesaurusEditor.Layout.Header>
             <ThesaurusEditor.View thesaurus={thesaurus}/>
         </ThesaurusEditor.Layout.Body>
