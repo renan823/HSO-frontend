@@ -1,32 +1,21 @@
 "use client"
 
-import api from "@/services/api";
-import store from "@/services/store";
+import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
 export default function Login () {
-    const { user } = store.getState();
+    const { user, authenticate } = useAuth();
 
-    const [email, setEmail] = useState("jose@email.com");
-    const [password, setPassword] = useState("1234");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
    
     async function handleLogin () {
         if (email.trim().length !== 0 && password.trim().length !== 0) {
-            try {
-                const response = await api.post("/users/auth/login", { email, password });
-
-                if (response.status === 200) {
-                    store.getState().setUser(response.data.user);
-                    store.getState().setToken(response.data.token);
-                    store.getState().setRefresh(response.data.refresh);
-                } else {
-                    toast.error(response.data.message || "Algo deu errado");
-                }
-            } catch (error: any) {
-                toast.error("Algo deu errado");
-            }
+            await authenticate(email, password);
+        } else {
+            toast.error("Preencha corretamente os campos");
         }
     }
 
@@ -41,11 +30,29 @@ export default function Login () {
 
 
     return (
-        <div className="flex flex-col p-4 justify-center">
-            <h1 className="text-2xl text-white font-bold">*futuro formulário de login</h1>
-            <button className="bg-violet-700 px-10 py-2 rounded-md shadow-md shadow-violet-900 hover:bg-violet-600 hover:shadow-violet-800" onClick={handleLogin}>
-                <p className="text-lg text-white font-bold text-center">Fazer login</p>
-            </button>
+        <div className="flex-col w-3/6 p-6 bg-slate-800 rounded-lg">
+            <div>
+                <h1 className="text-3xl text-violet-700 underline font-bold">Entre na sua conta</h1>
+            </div>
+            <div className="py-4">
+                <div className="m-2">
+                    <label className="text-violet-500 text-lg font-bold">Email:</label>
+                    <div>
+                        <input className="w-2/3 p-2 rounded-md shadow-sm shadow-slate-500 text-lg font-bold" type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="off"/>
+                    </div>
+                </div>
+                <div className="m-2">
+                    <label className="text-violet-500 text-lg font-bold">Senha:</label>
+                    <div>
+                        <input className="w-2/3 p-2 rounded-md shadow-sm shadow-slate-500 text-lg font-bold" type="password" value={password} onChange={(event) => setPassword(event.target.value)}/>
+                    </div>
+                </div>
+                <div className="flex justify-end px-5">
+                    <button className="bg-violet-700 px-10 py-2 rounded-md shadow-md shadow-violet-900 hover:bg-violet-600 hover:shadow-violet-800" onClick={handleLogin}>
+                        <p className="text-lg text-white font-bold text-center">Fazer login</p>
+                    </button>
+                </div>
+            </div>
         </div>
     )
 }

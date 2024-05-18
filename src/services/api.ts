@@ -7,7 +7,6 @@ const baseURL = "http://localhost:5000/api";
 
 const api = axios.create({
     baseURL: baseURL,
-    headers: { Authorization: `Bearer ${store.getState().token}` }
 });
 
 api.interceptors.request.use(async (req) => {
@@ -17,7 +16,7 @@ api.interceptors.request.use(async (req) => {
         const decoded = jwtDecode(store.getState().token || "");
             
         if (!dayjs(decoded.exp).isBefore(dayjs())) {
-                return req;
+            return req;
         }
     
         const response = await axios.post(`${baseURL}/users/auth/refresh`, { tokenId: store.getState().refresh?.id });

@@ -1,15 +1,15 @@
 "use client";
 
 import PermissionBanner from "@/components/PermissionBanner";
+import { useAuth } from "@/contexts/AuthContext";
 import api from "@/services/api";
-import store from "@/services/store";
 import { UploadIcon } from "lucide-react";
 import { FormEvent, createRef, useCallback, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import toast from "react-hot-toast";
 
 export default function Upload () {
-    const { user } = store.getState();
+    const { user } = useAuth();
 
     if (!user) {
         return (

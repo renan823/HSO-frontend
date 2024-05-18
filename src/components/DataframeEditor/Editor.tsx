@@ -2,9 +2,9 @@ import { DataframeInterface } from "@/services/interfaces";
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import toast from "react-hot-toast";
 import Card from "../Card";
+import { useAuth } from "@/contexts/AuthContext";
 import PermissionBanner from "../PermissionBanner";
 import api from "@/services/api";
-import store from "@/services/store";
 
 interface EditorProps {
     filename: string
@@ -13,7 +13,7 @@ interface EditorProps {
 }
 
 export default function Editor ({ filename, dataframe, setDataframe }: EditorProps) {
-    const { user } = store.getState();;
+    const { user } = useAuth();
 
     if (!filename || filename.trim().length === 0) {
         return (

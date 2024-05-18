@@ -3,14 +3,14 @@ import toast from "react-hot-toast";
 import Card from "../Card";
 import PermissionBanner from "../PermissionBanner";
 import api from "@/services/api";
-import store from "@/services/store";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface EditorProps {
     setThesaurus: Dispatch<SetStateAction<any>>
 }
 
 export default function Editor ({ setThesaurus }: EditorProps) {
-    const { user } = store.getState();
+    const { user } = useAuth();
 
     if (!user) {
         return (

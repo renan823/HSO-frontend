@@ -4,13 +4,13 @@ import FileSelector from "@/components/FileSelector";
 import Loader from "@/components/Loader";
 import PermissionBanner from "@/components/PermissionBanner";
 import { ThesaurusEditor } from "@/components/ThesaurusEditor";
+import { useAuth } from "@/contexts/AuthContext";
 import api from "@/services/api";
-import store from "@/services/store";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function Thesaurus () {
-    const { user } = store.getState();
+    const { user } = useAuth();
 
     const [selectedFile, setSelectedfile] = useState("");
     const [thesaurus, setThesaurus] = useState<any>();
