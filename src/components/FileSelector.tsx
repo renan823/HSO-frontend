@@ -1,7 +1,7 @@
-import ServerRequest from "@/services/ServerRequest";
 import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Loader from "./Loader";
+import api from "@/services/api";
 
 interface FileSelectorProps {
     setSelectedFile: Dispatch<SetStateAction<string>>
@@ -26,14 +26,12 @@ export default function FileSelector ({ setSelectedFile }: FileSelectorProps) {
     useEffect(() => {
         async function fetch () {
             try {
-                let request = new ServerRequest("get", "/files/all");
+                const response = await api.get("/files/all");
 
-                let response = await request.handle();
-
-                if (response.getStatus() === 200) {
-                    setFiles(response.getData().files);
+                if (response.status === 200) {
+                    setFiles(response.data.files);
                 } else {
-                    toast.error(response.getData().message ?? "Algo deu errado");
+                    toast.error(response.data.message ?? "Algo deu errado");
                 }
 
             } catch (error: any) {

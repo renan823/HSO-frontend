@@ -1,10 +1,10 @@
-import ServerRequest from "@/services/ServerRequest";
 import { DataframeInterface } from "@/services/interfaces";
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import toast from "react-hot-toast";
 import Card from "../Card";
-import { useAuth } from "@/contexts/AuthContext";
 import PermissionBanner from "../PermissionBanner";
+import api from "@/services/api";
+import store from "@/services/store";
 
 interface EditorProps {
     filename: string
@@ -13,7 +13,7 @@ interface EditorProps {
 }
 
 export default function Editor ({ filename, dataframe, setDataframe }: EditorProps) {
-    const { user } = useAuth();
+    const { user } = store.getState();;
 
     if (!filename || filename.trim().length === 0) {
         return (
@@ -54,18 +54,16 @@ export default function Editor ({ filename, dataframe, setDataframe }: EditorPro
         event.preventDefault();
 
         if (columnToDrop.trim().length !== 0) {
-            const request = new ServerRequest("post", "/dataframes/alter/drop", { filename, column: columnToDrop });
+            const response = await api.post("/dataframes/alter/drop", { filename, column: columnToDrop });
 
-            const response = await request.handle();
-
-            if (response.getStatus() === 200) {
-                setDataframe(response.getData().dataframe);
-                return toast.success("Coluna removida");
+            if (response.status === 200) {
+                setDataframe(response.data.dataframe);
+                toast.success("Coluna removida");
             } else {
-                return toast.error(response.getData().message ?? "Algo deu errado");
+                toast.error(response.data.message ?? "Algo deu errado");
             }
         } else {
-            return toast.error("Nenhuma coluna selecionada");
+            toast.error("Nenhuma coluna selecionada");
         }
     }
 
@@ -87,18 +85,16 @@ export default function Editor ({ filename, dataframe, setDataframe }: EditorPro
                 filters.push(format);
             }
 
-            const request = new ServerRequest("post", "/dataframes/alter/filter", { filename, filters });
+            const response = await api.post("/dataframes/alter/filter", { filename, filters });
 
-            const response = await request.handle();
-
-            if (response.getStatus() === 200) {
-                setDataframe(response.getData().dataframe);
-                return toast.success("Filtro(s) aplicado(s)");
+            if (response.status === 200) {
+                setDataframe(response.data.dataframe);
+                toast.success("Filtro(s) aplicado(s)");
             } else {
-                return toast.error(response.getData().message ?? "Algo deu errado");
+                toast.error(response.data.message ?? "Algo deu errado");
             }
         } else {
-            return toast.error("Nenhum filtro selecionado");
+            toast.error("Nenhum filtro selecionado");
         }
     }
 
@@ -106,20 +102,18 @@ export default function Editor ({ filename, dataframe, setDataframe }: EditorPro
         event.preventDefault();
 
         if (replace.word.trim().length !== 0 ||  replace.substitute.trim().length !== 0) {
-            const request = new ServerRequest("post", "/dataframes/alter/replace", { filename, words: [replace.word], substitutes: [replace.substitute] });
-
-            const response = await request.handle();
+            const response = await api.post("/dataframes/alter/replace", { filename, words: [replace.word], substitutes: [replace.substitute] });
 
             setReplace({ word: "", substitute: ""});
 
-            if (response.getStatus() === 200) {
-                setDataframe(response.getData().dataframe);
-                return toast.success("Palavra(s) substituida(s)");
+            if (response.status === 200) {
+                setDataframe(response.data.dataframe);
+                toast.success("Palavra(s) substituida(s)");
             } else {
-                return toast.error(response.getData().message ?? "Algo deu errado");
+                toast.error(response.data.message ?? "Algo deu errado");
             }
         } else {
-            return toast.error("Preencha algum dos campos");
+            toast.error("Preencha algum dos campos");
         }
     }
 

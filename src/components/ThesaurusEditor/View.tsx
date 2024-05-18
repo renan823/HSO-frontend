@@ -4,8 +4,8 @@ import { useState } from "react";
 import { Modal } from "../Modal";
 import { SerializedGraph } from "graphology-types";
 import GraphContainer from "../Graph/GraphContainer";
-import ServerRequest from "@/services/ServerRequest";
 import toast from "react-hot-toast";
+import api from "@/services/api";
 
 interface ViewProps {
     thesaurus: {
@@ -30,15 +30,13 @@ export default function View ({ thesaurus }: ViewProps) {
 
     async function toggleNetworkModal () {
         try {
-            const request = new ServerRequest("get", "/network/thesaurus");
+            const response = await api.get("/network/thesaurus");
 
-            const response = await request.handle();
-
-            if (response.getStatus() === 201) {
-                setNetwork(response.getData().network);
+            if (response.status === 201) {
+                setNetwork(response.data.network);
                 setOpen(true);
             } else {
-                toast.error(response.getData().message || "Algo deu errado");
+                toast.error(response.data.message || "Algo deu errado");
             }
         } catch {
             toast.error("Algo deu errado");

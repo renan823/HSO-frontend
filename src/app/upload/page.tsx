@@ -1,15 +1,15 @@
 "use client";
 
 import PermissionBanner from "@/components/PermissionBanner";
-import { useAuth } from "@/contexts/AuthContext";
-import ServerRequest from "@/services/ServerRequest";
+import api from "@/services/api";
+import store from "@/services/store";
 import { UploadIcon } from "lucide-react";
 import { FormEvent, createRef, useCallback, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import toast from "react-hot-toast";
 
 export default function Upload () {
-    const { user } = useAuth();
+    const { user } = store.getState();
 
     if (!user) {
         return (
@@ -22,11 +22,11 @@ export default function Upload () {
 
     const onDrop = useCallback((files: File[]) => {
         if (!files || files.length === 0) {
-            return toast.error("Nenhum arquivo selecionado");
+            toast.error("Nenhum arquivo selecionado");
         }
 
         if (files[0].name.split(".").pop() !== "xlsx"){
-            return toast.error("Extensão incorreta");
+            toast.error("Extensão incorreta");
         }
 
         setFile(files[0]);
@@ -46,25 +46,19 @@ export default function Upload () {
 
                 payload.set("file", file);
 
-                const request = new ServerRequest("post", "/files/save", payload, { 'Content-Type': 'multipart/form-data' });
-                
-                if (user?.token) {
-                    request.setToken(user.token);
-                }
+                const response = await api.post("/files/save", payload, { headers: { 'Content-Type': 'multipart/form-data' } });
 
-                const response = await request.handle();
-
-                if (response.getStatus() === 201) {
+                if (response.status === 201) {
                     clearField();
-                    return toast.success("Arquivo adicionado");
+                    toast.success("Arquivo adicionado");
                 } else {
-                    return toast.error(response.getData().message ?? "Algo deu errado");
+                    toast.error(response.data.message ?? "Algo deu errado");
                 }
             } catch (error: any) {
-                return toast.error(error.message || "Algo deu errado");
+                toast.error(error.message || "Algo deu errado");
             }
         } else {
-            return toast.error("Nenhum arquivo selecionado");
+            toast.error("Nenhum arquivo selecionado");
         }
     }
 

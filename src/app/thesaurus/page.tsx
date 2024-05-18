@@ -4,13 +4,13 @@ import FileSelector from "@/components/FileSelector";
 import Loader from "@/components/Loader";
 import PermissionBanner from "@/components/PermissionBanner";
 import { ThesaurusEditor } from "@/components/ThesaurusEditor";
-import { useAuth } from "@/contexts/AuthContext";
-import ServerRequest from "@/services/ServerRequest";
+import api from "@/services/api";
+import store from "@/services/store";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function Thesaurus () {
-    const { user } = useAuth();
+    const { user } = store.getState();
 
     const [selectedFile, setSelectedfile] = useState("");
     const [thesaurus, setThesaurus] = useState<any>();
@@ -19,11 +19,9 @@ export default function Thesaurus () {
     useEffect(() => {
         async function fetch () {
             try {
-                const request = new ServerRequest("get", "/thesaurus");
+                const response = await api.get("/thesaurus");
 
-                const response = await request.handle();
-
-                setThesaurus(response.getData().thesaurus);
+                setThesaurus(response.data.thesaurus);
             } catch (error: any) {
                 return toast.error("Algo deu errado");
             } 
@@ -36,14 +34,12 @@ export default function Thesaurus () {
         async function fetch () {
             try {
                 setLoading(true);
-
-                const request = new ServerRequest("post", "/thesaurus/fill", { filename: selectedFile });
                
-                const response = await request.handle();
+                const response = await api.post("/thesaurus/fill", { filename: selectedFile });
 
-                setThesaurus(response.getData().thesaurus);
+                setThesaurus(response.data.thesaurus);
             } catch (error: any) {
-                return toast.error("Algo deu errado");
+                toast.error("Algo deu errado");
             } finally {
                 setLoading(false)
             }

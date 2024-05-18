@@ -1,16 +1,16 @@
-import ServerRequest from "@/services/ServerRequest";
 import { Dispatch, SetStateAction, useState } from "react";
 import toast from "react-hot-toast";
 import Card from "../Card";
-import { useAuth } from "@/contexts/AuthContext";
 import PermissionBanner from "../PermissionBanner";
+import api from "@/services/api";
+import store from "@/services/store";
 
 interface EditorProps {
     setThesaurus: Dispatch<SetStateAction<any>>
 }
 
 export default function Editor ({ setThesaurus }: EditorProps) {
-    const { user } = useAuth();
+    const { user } = store.getState();
 
     if (!user) {
         return (
@@ -26,18 +26,16 @@ export default function Editor ({ setThesaurus }: EditorProps) {
 
     async function handleAddSynonym () {
         if (word.trim().length !== 0 && synonym.trim().length !== 0) {
-            const request = new ServerRequest("post", "/thesaurus/synonym/add", { word, synonym });
-
-            const response = await request.handle();
+            const response = await api.post("/thesaurus/synonym/add", { word, synonym });
 
             setWord("");
             setSynonym("");
 
-            if (response.getStatus() === 200) {
-                setThesaurus(response.getData().thesaurus);
-                return toast.success(response.getData().message);
+            if (response.status === 200) {
+                setThesaurus(response.data.thesaurus);
+                return toast.success(response.data.message);
             } else {
-                return toast.error(response.getData().message);
+                return toast.error(response.data.message);
             }
         } else {
             return toast.error("Preencha corretamento os campos");
@@ -46,18 +44,16 @@ export default function Editor ({ setThesaurus }: EditorProps) {
 
     async function handleRemoveSynonym () {
         if (word.trim().length !== 0 && synonym.trim().length !== 0) {
-            const request = new ServerRequest("post", "/thesaurus/synonym/remove", { word, synonym });
-
-            const response = await request.handle();
+            const response = await api.post("/thesaurus/synonym/remove", { word, synonym });
 
             setWord("");
             setSynonym("");
 
-            if (response.getStatus() === 200) {
-                setThesaurus(response.getData().thesaurus);
-                return toast.success(response.getData().message);
+            if (response.status === 200) {
+                setThesaurus(response.data.thesaurus);
+                return toast.success(response.data.message);
             } else {
-                return toast.error(response.getData().message)
+                return toast.error(response.data.message)
             }
         } else {
             return toast.error("Preencha corretamento os campos");
@@ -66,17 +62,15 @@ export default function Editor ({ setThesaurus }: EditorProps) {
 
     async function handleRemoveWord () {
         if (removeWord.trim().length !== 0) {
-            const request = new ServerRequest("post", "/thesaurus/word/remove", { word: removeWord });
-
-            const response = await request.handle();
+            const response = await api.post("/thesaurus/word/remove", { word: removeWord });
 
             setRemoveWord("");
 
-            if (response.getStatus() === 200) {
-                setThesaurus(response.getData().thesaurus);
-                return toast.success(response.getData().message);
+            if (response.status === 200) {
+                setThesaurus(response.data.thesaurus);
+                return toast.success(response.data.message);
             } else {
-                return toast.error(response.getData().message)
+                return toast.error(response.data.message)
             }
         } else {
             return toast.error("Digite a palavra corretamente");

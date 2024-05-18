@@ -1,17 +1,33 @@
 "use client"
 
-import { useAuth } from "@/contexts/AuthContext";
+import api from "@/services/api";
+import store from "@/services/store";
 import Link from "next/link";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Login () {
+    const { user } = store.getState();
 
     const [email, setEmail] = useState("jose@email.com");
     const [password, setPassword] = useState("1234");
-    const { authenticate, user } = useAuth();
-
+   
     async function handleLogin () {
-        await authenticate(email, password);
+        if (email.trim().length !== 0 && password.trim().length !== 0) {
+            try {
+                const response = await api.post("/users/auth/login", { email, password });
+
+                if (response.status === 200) {
+                    store.getState().setUser(response.data.user);
+                    store.getState().setToken(response.data.token);
+                    store.getState().setRefresh(response.data.refresh);
+                } else {
+                    toast.error(response.data.message || "Algo deu errado");
+                }
+            } catch (error: any) {
+                toast.error("Algo deu errado");
+            }
+        }
     }
 
     if (user) {

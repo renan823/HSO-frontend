@@ -2,28 +2,23 @@
 
 import { DataframeEditor } from "@/components/DataframeEditor";
 import FileSelector from "@/components/FileSelector";
-import { useAuth } from "@/contexts/AuthContext";
-import ServerRequest from "@/services/ServerRequest";
+import api from "@/services/api";
 import { DataframeInterface } from "@/services/interfaces";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function Dataframe () {
-    const { user } = useAuth();
-
     const [selectedFile, setSelectedfile] = useState("");
     const [dataframe, setDataframe] = useState<DataframeInterface>();
 
     useEffect(() => {
         async function fetch () {
             try {
-                const request = new ServerRequest("get", `/dataframes/${selectedFile}`);
+                const response = await api.get(`/dataframes/${selectedFile}`);
 
-                const response = await request.handle();
-
-                setDataframe(response.getData().dataframe);
+                setDataframe(response.data.dataframe);
             } catch (error: any) {
-                return toast.error("Algo deu errado");
+                toast.error("Algo deu errado");
             } 
         }
 

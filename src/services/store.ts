@@ -2,8 +2,8 @@ import { create } from "zustand";
 
 type State = {
     user: { name: string, email: string, id: string, role: string } | null,
-    token: string | null ,
-    refresh: string | null 
+    token: string | null,
+    refresh: { id: string, userId: string, expiresIn: number } | null
 }
 
 type Actions = {

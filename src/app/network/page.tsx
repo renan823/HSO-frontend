@@ -5,7 +5,7 @@ import GraphContainer from "@/components/Graph/GraphContainer";
 import Loader from "@/components/Loader";
 import { Modal } from "@/components/Modal";
 import { NetworkEditor } from "@/components/NetworkEditor";
-import ServerRequest from "@/services/ServerRequest";
+import api from "@/services/api";
 import { SerializedGraph } from "graphology-types";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -22,16 +22,14 @@ export default function Network () {
             try {
                 setLoading(true);
 
-                const request = new ServerRequest("post", "/network/new", { filename: selectedFile });
-               
-                const response = await request.handle();
+                const response = await api.post("/network/new", { filename: selectedFile });
 
-                setNetwork(response.getData().network);
+                setNetwork(response.data.network);
                 setOpen(true);
             } catch (error: any) {
-                return toast.error("Algo deu errado");
+                toast.error("Algo deu errado");
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
         }
 
