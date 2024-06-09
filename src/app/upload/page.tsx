@@ -46,7 +46,7 @@ export default function Upload () {
 
                 payload.set("file", file);
 
-                const response = await api.post("/files/save", payload, { headers: { 'Content-Type': 'multipart/form-data' } });
+                const response = await api.post("/files/save", payload, { headers: { 'Content-Type': 'multipart/form-data' }, withCredentials: true });
 
                 if (response.status === 201) {
                     clearField();

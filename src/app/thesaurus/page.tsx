@@ -35,7 +35,7 @@ export default function Thesaurus () {
             try {
                 setLoading(true);
                
-                const response = await api.post("/thesaurus/fill", { filename: selectedFile });
+                const response = await api.post("/thesaurus/fill", { filename: selectedFile }, { withCredentials: true });
 
                 setThesaurus(response.data.thesaurus);
             } catch (error: any) {

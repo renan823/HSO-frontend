@@ -3,21 +3,28 @@ export interface DataframeInterface {
     data: any[][]
 }
 
-export interface UserInterface {
-    name: string
+export interface SignupUserInterface {
+    name: string,
     email: string,
+    role: string,
+    password: string
+}
+
+export interface UserInterface {
+    name: string,
+    email: string,
+    role: string,
     id: string,
-    token: string,
-    role: string
+    tokenId: string
+}
+
+export enum Roles {
+    ADM = "adm",
+    USER = "user"
 }
 
 export type LayoutMapping = {
     [node: string]: {
         [dimension: string]: number;
     };
-}
-
-export type ServerResponse = {
-    status: number,
-    data: any
 }

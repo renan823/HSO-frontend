@@ -54,7 +54,7 @@ export default function Editor ({ filename, dataframe, setDataframe }: EditorPro
         event.preventDefault();
 
         if (columnToDrop.trim().length !== 0) {
-            const response = await api.post("/dataframes/alter/drop", { filename, column: columnToDrop });
+            const response = await api.post("/dataframes/alter/drop", { filename, column: columnToDrop }, { withCredentials: true });
 
             if (response.status === 200) {
                 setDataframe(response.data.dataframe);
@@ -85,7 +85,7 @@ export default function Editor ({ filename, dataframe, setDataframe }: EditorPro
                 filters.push(format);
             }
 
-            const response = await api.post("/dataframes/alter/filter", { filename, filters });
+            const response = await api.post("/dataframes/alter/filter", { filename, filters }, { withCredentials: true });
 
             if (response.status === 200) {
                 setDataframe(response.data.dataframe);
@@ -102,7 +102,7 @@ export default function Editor ({ filename, dataframe, setDataframe }: EditorPro
         event.preventDefault();
 
         if (replace.word.trim().length !== 0 ||  replace.substitute.trim().length !== 0) {
-            const response = await api.post("/dataframes/alter/replace", { filename, words: [replace.word], substitutes: [replace.substitute] });
+            const response = await api.post("/dataframes/alter/replace", { filename, words: [replace.word], substitutes: [replace.substitute] }, { withCredentials: true });
 
             setReplace({ word: "", substitute: ""});
 

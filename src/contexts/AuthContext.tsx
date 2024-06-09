@@ -1,7 +1,7 @@
 "use client"
 
 import api from "@/services/api";
-import { UserInterface } from "@/services/interfaces";
+import { SignupUserInterface, UserInterface } from "@/services/interfaces";
 import store from "@/services/store";
 import { ReactNode, createContext, useContext, useState, Dispatch, SetStateAction } from "react";
 import toast from "react-hot-toast";
@@ -13,10 +13,15 @@ interface AuthProviderProps {
 interface AuthContextProps {
     user: UserInterface | null, 
     setUser: Dispatch<SetStateAction<UserInterface | null>>,
-    authenticate: (email: string, password: string) => void
+    authenticate: (email: string, password: string) => void,
+    register: (user: SignupUserInterface) => void
 }
 
-const AuthContext = createContext<AuthContextProps>({ authenticate: () => {}, user: null, setUser: () => {} });
+const AuthContext = createContext<AuthContextProps>({ 
+    authenticate: () => {}, 
+    user: null, 
+    setUser: () => {}, 
+    register: () => {} });
 
 export function useAuth () {
     return useContext(AuthContext);
@@ -36,15 +41,30 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
                 store.getState().setRefresh(response.data.refresh);
                 toast.success("Você está logado");
             } else {
-                toast.error(response.data.message || "Algo deu errado");
+                toast.error(response.data.message ?? "Algo deu errado");
             }
         } catch (error: any) {
-            toast.error(error.response.data.message || "Algo deu errado");
+            toast.error(error.response.data.message ?? "Algo deu errado");
+        }
+    }
+
+    async function register (user: SignupUserInterface): Promise<void> {
+        try {
+            const response = await api.post("/users/new", { user });
+
+            if (response.status === 201) {
+                
+                toast.success("Usuário criado");
+            } else {
+                toast.error(response.data.message ?? "Algo deu errado");
+            }
+        } catch (error: any) {
+            toast.error(error.response.data.message ?? "Algo deu errado");
         }
     }
 
     return (
-        <AuthContext.Provider value={{ user, setUser, authenticate }}>
+        <AuthContext.Provider value={{ user, setUser, authenticate, register }}>
             { children }
         </AuthContext.Provider>
     )

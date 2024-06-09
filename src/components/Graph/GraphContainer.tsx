@@ -1,14 +1,13 @@
 import { ControlsContainer, FullScreenControl, SigmaContainer, ZoomControl } from "@react-sigma/core";
 import Graph from "graphology";
 import { SerializedGraph } from "graphology-types";
-import * as GraphMetrics from "graphology-metrics/graph";
 import { useEffect, useState } from "react";
 import "@react-sigma/core/lib/react-sigma.min.css";
 import GraphData from "./GraphData";
 import { Focus, Maximize, Minimize, ZoomIn, ZoomOut } from "lucide-react";
 import LayoutControl from "./LayoutControl";
 import { weightedDegree } from "graphology-metrics/node";
-import betweennessCentrality from "graphology-metrics/centrality/betweenness";
+import { density, diameter, radius } from "@/services/graph";
 
 interface GraphProps {
     data: SerializedGraph | undefined
@@ -21,7 +20,8 @@ interface NodeData {
 
 interface NetworkData {
     density: number,
-    diameter: number
+    diameter: number,
+    radius: number
 }
 
 export default function GraphContainer ({ data }: GraphProps) {
@@ -35,11 +35,6 @@ export default function GraphContainer ({ data }: GraphProps) {
     useEffect(() => {
         if (data) {
             setGraph(new Graph({ allowSelfLoops: false }).import(data));
-
-            setNetworkData({
-                density: GraphMetrics.density(graph.nodes.length, graph.edges.length),
-                diameter: GraphMetrics.diameter(graph)
-            })
         }
     }, [])
 
@@ -55,12 +50,19 @@ export default function GraphContainer ({ data }: GraphProps) {
     useEffect(() => {
         if (data) {
             setGraph(new Graph({ allowSelfLoops: false }).import(data));
-            setNetworkData({
-                density: GraphMetrics.density(graph.nodes.length, graph.edges.length),
-                diameter: GraphMetrics.diameter(graph)
-            })
         }
     }, [data])
+
+    useEffect(() => {
+        if (graph) {
+            
+            setNetworkData({
+                density: density(graph),
+                diameter: diameter(graph),
+                radius: radius(graph)
+            })
+        }
+    }, [graph])
 
     return (
         <div className="overflow-y-auto flex gap-10 p-2">
@@ -85,8 +87,9 @@ export default function GraphContainer ({ data }: GraphProps) {
                     <h2 className="text-violet-700 font-bold">N° de arestas: {graph.edges().length}</h2>
                     <h2 className="text-slate-800 font-bold">Densidade: {networkData?.density}</h2>
                     <h2 className="text-slate-800 font-bold">Diametro: {networkData?.diameter}</h2>
+                    <h2 className="text-slate-800 font-bold">Raio: {networkData?.radius}</h2>
                     <hr className="my-2 border-violet-700"/>
-                    <h2 className="text-slate-800 font-bold">Nó selecionado: {node}</h2>
+                    <h2 className="text-slate-800 font-bold">Nó selecionado: <span className="text-violet-700 text-lg underline">{node}</span></h2>
                     <h2 className="text-slate-800 font-bold">Grau do nó: {nodeData?.degree}</h2>
                     <h2 className="text-slate-800 font-bold">Grau ponderado do nó: { node ? weightedDegree(graph, node): "" }</h2>
                     
